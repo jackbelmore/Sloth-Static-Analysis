@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sysmon schemaversion="4.50">
+  <EventFiltering>
+    <!-- Log all process creations -->
+    <ProcessCreate onmatch="exclude">
+      <!-- no exclusions -->
+    </ProcessCreate>
+  </EventFiltering>
+</Sysmon>

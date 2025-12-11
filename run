@@ -1,0 +1,76 @@
+#!/bin/bash
+# Simple launcher for malware analysis tool
+
+cd "$(dirname "$0")"
+source venv/bin/activate
+
+# Function to convert Windows path to WSL path
+convert_path() {
+    local path="$1"
+
+    # Check if it's a Windows path (contains backslash or starts with drive letter)
+    if [[ "$path" =~ ^[A-Za-z]:\\ ]] || [[ "$path" =~ \\ ]]; then
+        # Convert backslashes to forward slashes
+        path="${path//\\//}"
+
+        # Extract drive letter and convert to lowercase
+        if [[ "$path" =~ ^([A-Za-z]): ]]; then
+            local drive="${BASH_REMATCH[1],,}"  # Convert to lowercase
+            path="${path#*:}"  # Remove drive letter and colon
+            path="/mnt/$drive$path"
+        fi
+
+        echo "→ Converted to: $path" >&2
+    fi
+
+    echo "$path"
+}
+
+if [ $# -eq 0 ]; then
+    echo "Malware Analysis TUI - Launcher"
+    echo "================================"
+    echo ""
+    echo "Usage:"
+    echo "  ./run analyze <file> [-a|--async]  - Analyze a PE file"
+    echo "  ./run tui [dir]                    - Launch interactive TUI"
+    echo "  ./run test                         - Run test with notepad.exe"
+    echo ""
+    echo "Examples:"
+    echo "  ./run analyze /mnt/c/Windows/System32/calc.exe"
+    echo "  ./run analyze 'C:\\Windows\\System32\\calc.exe' -a"
+    echo "  ./run tui /mnt/c/Windows/System32"
+    echo "  ./run test"
+    echo ""
+    echo "Note: Both Windows (C:\\...) and WSL (/mnt/c/...) paths are supported!"
+    echo "      -a or --async runs capa + floss (slower but more thorough)"
+    exit 0
+fi
+
+case "$1" in
+    analyze)
+        if [ -z "$2" ]; then
+            echo "Error: Please specify a file to analyze"
+            echo "Usage: ./run analyze <file> [-a|--async]"
+            exit 1
+        fi
+        TARGET="$(convert_path "$2")"
+        ASYNC_FLAG=""
+        if [ "$3" = "--async" ] || [ "$3" = "-a" ]; then
+            ASYNC_FLAG="--async"
+        fi
+        python cli.py "$TARGET" $ASYNC_FLAG
+        ;;
+    tui)
+        DIR="${2:-/mnt/c/Windows/System32}"
+        DIR="$(convert_path "$DIR")"
+        python tui.py "$DIR"
+        ;;
+    test)
+        bash test_pe.sh
+        ;;
+    *)
+        echo "Unknown command: $1"
+        echo "Run './run' for usage"
+        exit 1
+        ;;
+esac

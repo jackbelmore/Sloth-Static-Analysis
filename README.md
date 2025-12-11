@@ -21,15 +21,43 @@ A Text User Interface (TUI) for static analysis of Windows PE files, built with 
 
 ## Installation
 
-```bash
-# Create virtual environment
-python3.12 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+### Windows (PowerShell)
 
-# Install dependencies
+```powershell
+# Clone
+git clone https://github.com/jackbelmore/Sloth-Static-Analysis.git
+cd Sloth-Static-Analysis
+
+# Create venv
+py -3 -m venv venv-win
+
+# Activate
+.\venv-win\Scripts\activate
+
+# Install deps
 pip install -r requirements.txt
 
-# Install capa and floss (optional, for async analysis)
+# Optional async tools
+pip install flare-capa flare-floss
+```
+
+### Linux (bash)
+
+```bash
+# Clone
+git clone https://github.com/jackbelmore/Sloth-Static-Analysis.git
+cd Sloth-Static-Analysis
+
+# Create venv
+python3 -m venv venv
+
+# Activate
+source venv/bin/activate
+
+# Install deps
+pip install -r requirements.txt
+
+# Optional async tools
 pip install flare-capa flare-floss
 ```
 

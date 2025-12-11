@@ -34,11 +34,15 @@ py -3 -m venv venv-win
 # Activate
 .\venv-win\Scripts\activate
 
-# Install deps
-pip install -r requirements.txt
+# Upgrade tooling (recommended)
+python -m pip install --upgrade pip setuptools wheel
+
+# Install core deps (binary wheels only; avoids needing build tools)
+pip install --only-binary=:all: -r requirements.txt
 
 # Optional async tools
-pip install flare-capa flare-floss
+# Try wheels first; if build fails, install Microsoft C++ Build Tools or skip
+pip install --only-binary=:all: flare-capa flare-floss
 ```
 
 ### Linux (bash)
@@ -59,6 +63,20 @@ pip install -r requirements.txt
 
 # Optional async tools
 pip install flare-capa flare-floss
+```
+
+### Uninstall / Cleanup (Windows)
+
+```powershell
+deactivate  # if venv active
+Remove-Item -Recurse -Force .\venv-win
+```
+
+### Uninstall / Cleanup (Linux)
+
+```bash
+deactivate  # if venv active
+rm -rf venv
 ```
 
 ## Usage

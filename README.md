@@ -41,8 +41,11 @@ python -m pip install --upgrade pip setuptools wheel
 pip install --only-binary=:all: -r requirements.txt
 
 # Optional async tools
-# Try wheels first; if build fails, install Microsoft C++ Build Tools or skip
-pip install --only-binary=:all: flare-capa flare-floss
+# flare-capa/flare-floss may need Microsoft Visual C++ Build Tools if wheels are unavailable.
+# Install Build Tools (VS 2022 Build Tools with "Desktop development with C++"):
+#   winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools --quiet --norestart"
+# Then install:
+pip install flare-capa flare-floss
 ```
 
 ### Linux (bash)
@@ -62,6 +65,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Optional async tools
+# May require build-essential/clang if wheels are unavailable on your distro
 pip install flare-capa flare-floss
 ```
 
